@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bumin | 个人主页</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --secondary: #8b5cf6;
+      --accent: #06b6d4;
+      --bg: #0f0f1a;
+      --surface: #1a1a2e;
+      --surface-light: #252542;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+      --glow-primary: rgba(99, 102, 241, 0.5);
+      --glow-accent: rgba(6, 182, 212, 0.4);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Background Image with Blur */
+    .bg-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .bg-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(8px) brightness(0.4);
+      transform: scale(1.1);
+    }
+
+    /* Overlay for better text readability */
+    .bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 15, 26, 0.6);
+      z-index: 0;
+    }
+
+    body {
+      font-family: 'Noto Sans SC', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Particle Background */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.4;
+      }
+      25% {
+        transform: translateY(-30px) translateX(20px);
+        opacity: 0.6;
+      }
+      50% {
+        transform: translateY(-10px) translateX(-15px);
+        opacity: 0.3;
+      }
+      75% {
+        transform: translateY(-40px) translateX(10px);
+        opacity: 0.5;
+      }
+    }
+
+    /* Grid Background */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Main Container */
+    .container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3rem;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    /* Avatar Section */
+    .avatar-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-ring {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--gradient);
+      animation: rotate 4s linear infinite;
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .avatar-ring::before {
+      content: '';
+      position: absolute;
+      width: 114px;
+      height: 114px;
+      left: 3px;
+      top: 3px;
+      border-radius: 50%;
+      background: var(--bg);
+    }
+
+    .avatar-glow {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--glow-primary), transparent 70%);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+      }
+    }
+
+    .avatar {
+      position: relative;
+      width: 114px;
+      height: 114px;
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary);
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .avatar img {
+      width: 114px;
+      height: 114px;
+      object-fit: cover;
+    }
+
+    .avatar-placeholder {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .info {
+      text-align: center;
+    }
+
+    .nickname {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .signature {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* Cards Section */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      width: 100%;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.2s forwards;
+    }
+
+    @media (max-width: 500px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: rgba(26, 26, 46, 0.8);
+      backdrop-filter: blur(5px);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 30px var(--glow-primary);
+      border-color: var(--primary);
+    }
+
+    .card:hover::before {
+      opacity: 0.05;
+    }
+
+    .card:active {
+      transform: translateY(-4px) scale(0.98);
+    }
+
+    .card-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      padding: 12px;
+    }
+
+    .card-icon.bilibili {
+      background: linear-gradient(135deg, #00a1d6, #fb7299);
+    }
+
+    .card-icon.qq {
+      background: linear-gradient(135deg, #12b7f5, #6bb5ff);
+    }
+
+    .card-icon i,
+    .card-icon img {
+      color: white;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .card-content {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.375rem;
+    }
+
+    .card-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .card-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1.25rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      transition: color 0.3s ease;
+    }
+
+    .card-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: -1;
+    }
+
+    .card:hover .card-btn {
+      color: white;
+      border-color: transparent;
+    }
+
+    .card:hover .card-btn::before {
+      transform: translateX(0);
+    }
+
+    .card-btn i {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Decorative Elements */
+    .decoration {
+      width: 100%;
+      height: 2px;
+      background: var(--gradient);
+      border-radius: 1px;
+      position: relative;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.4s forwards;
+    }
+
+    .decoration::before,
+    .decoration::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--gradient);
+      border-radius: 50%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .decoration::before {
+      left: -4px;
+    }
+
+    .decoration::after {
+      right: -4px;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 1rem;
+      text-align: center;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.6s forwards;
+    }
+
+    .footer p {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .footer i {
+      color: #ff0055;
+      width: 14px;
+      height: 14px;
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+    }
+
+    /* Selection */
+    ::selection {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--surface-light);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Image -->
+  <div class="bg-image">
+    <img src="page1.jpg" alt="Background">
+  </div>
+  <div class="bg-overlay"></div>
+
+  <!-- Background Effects -->
+  <div class="grid-bg"></div>
+  <div class="particles" id="particles"></div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Avatar Section -->
+    <section class="avatar-section">
+      <div class="avatar-wrapper">
+        <div class="avatar-glow"></div>
+        <div class="avatar-ring"></div>
+        <div class="avatar">
+          <img src="page2.jpg" alt="Avatar">
+        </div>
+      </div>
+      <div class="info">
+        <h1 class="nickname">Bumin</h1>
+        <p class="signature">欢迎来到我的空间</p>
+      </div>
+    </section>
+
+    <!-- Cards Section -->
+    <section class="cards">
+      <!-- Bilibili Card -->
+      <a href="https://space.bilibili.com/25082845" target="_blank" class="card" title="访问我的B站空间">
+        <div class="card-icon bilibili">
+          <img src="bilibili_logo.png" alt="Bilibili">
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">哔哩哔哩</h2>
+          <p class="card-desc">-病毒-</p>
+        </div>
+        <span class="card-btn">
+          前往空间
+          <i data-lucide="arrow-right"></i>
+        </span>
+      </a>
+
+      <!-- QQ Card -->
+      <a href="https://user.qzone.qq.com/769185426" target="_blank" class="card" title="添加我的QQ">
+        <div class="card-icon qq">
+          <img src="qq_logo.png" alt="QQ">
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">QQ 联系</h2>
+          <p class="card-desc">769185426</p>
+        </div>
+        <span class="card-btn">
+          发起聊天
+          <i data-lucide="arrow-right"></i>
+        </span>
+      </a>
+    </section>
+
+    <!-- Decoration -->
+    <div class="decoration"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>
+        Made with 
+        <i data-lucide="heart"></i>
+        by Bumin
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Create particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const colors = ['#6366f1', '#8b5cf6', '#06b6d4'];
+      
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        const size = Math.random() * 6 + 2;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        particle.style.cssText = `
+          width: ${size}px;
+          height: ${size}px;
+          left: ${Math.random() * 100}%;
+          top: ${Math.random() * 100}%;
+          background: ${color};
+          animation-delay: ${Math.random() * 20}s;
+          animation-duration: ${15 + Math.random() * 15}s;
+        `;
+        
+        container.appendChild(particle);
+      }
+    }
+
+    createParticles();
+  </script>
+</body>
+</html>
